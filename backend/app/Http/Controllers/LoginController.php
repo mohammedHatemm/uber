@@ -12,24 +12,66 @@ class LoginController extends Controller
     //
     public function submit(Request $request)
     {
-        //validate phone number
         $request->validate([
-            'phone' => 'required|numeric|min:11',
+            'phone' => ['required', 'regex:/^\+?[1-9]\d{1,14}$/'], // تحسين التحقق للصيغة الدولية
+            'name' => 'required|string|max:255',
         ]);
 
+        // تنسيق الرقم إذا لم يبدأ بـ +
+        $phone = strpos($request->phone, '+') === 0 ? $request->phone : '+20' . $request->phone;
 
-        //find or create user model
         $user = User::firstOrCreate([
-            'phone' => $request->phone
+            'phone' => $phone,
+            'name' => $request->name,
+
         ]);
+
         if (!$user) {
-            return response()->json(['massage' => 'could not process a  user with this phone number '], 401);
+            return response()->json(['message' => 'Could not process a user with this phone number'], 401);
         }
 
-        //send the user a one-time usding code (otp)
         $user->notify(new LoginNeedsVerfication());
 
-        //return make a responce
-        return response()->json(['massage' => 'text massage notification send ']);
+        return response()->json(['message' => 'Text message notification sent']);
+    }
+
+
+
+    public function verify(Request $request)
+    {
+
+
+        //validate requist
+
+        $request->validate([
+            'phone' => 'required|numeric|min:11',
+            'login_code' => 'required|numeric|between:111111 , 999999',
+
+        ]);
+
+
+
+        //find user
+
+        $user = User::where('phone', $request->phone)->where('login_code', $request->login_code)->first();
+
+
+
+        //if he founded return tokeen
+        if ($user) {
+            $user->update([
+                'login_code' => null
+            ]);
+            return $user->createToken($request->login_code);
+        }
+
+
+        // if not return massagee
+
+        return response()->json(['massage' => 'invalde verificaton code'], 401);
+
+        //
+
+
     }
 }

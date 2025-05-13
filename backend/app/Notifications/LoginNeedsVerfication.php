@@ -31,27 +31,13 @@ class LoginNeedsVerfication extends Notification
         return [TwilioChannel::class];
     }
 
-    /**
-     * Get the mail representation of the notification.
-     */
+
     public function toTwilio($notifiable)
     {
-        $logiCode = rand(111111, 999999);
+        $loginCode = rand(111111, 999999);
         $notifiable->update([
-            'login_code' => $logiCode
+            'login_code' => $loginCode
         ]);
-        return (new TwilioSmsMessage())->content("your login code is {$notifiable} , please dont share with any one");
-    }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(object $notifiable): array
-    {
-        return [
-            //
-        ];
+        return (new TwilioSmsMessage())->content("your login code is {$loginCode} , please dont share with any one");
     }
 }

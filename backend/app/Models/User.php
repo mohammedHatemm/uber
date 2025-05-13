@@ -17,11 +17,7 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -29,7 +25,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $hidden = [
-        'password',
+        'login_code',
         'remember_token',
     ];
 
@@ -38,17 +34,18 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
-    public function routeNotificationForTwilid()
+    public function routeNotificationForTwilio()
     {
-        return $this->phone;
+        // إذا لم يبدأ الرقم بـ +، أضف رمز البلد
+        return strpos($this->phone, '+') === 0 ? $this->phone : '+20' . $this->phone;
     }
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    // protected function casts(): array
+    // {
+    //     return [
+    //         'email_verified_at' => 'datetime',
+    //         'password' => 'hashed',
+    //     ];
+    // }
 
     public function driver()
     {
