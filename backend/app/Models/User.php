@@ -39,13 +39,6 @@ class User extends Authenticatable
         // إذا لم يبدأ الرقم بـ +، أضف رمز البلد
         return strpos($this->phone, '+') === 0 ? $this->phone : '+20' . $this->phone;
     }
-    // protected function casts(): array
-    // {
-    //     return [
-    //         'email_verified_at' => 'datetime',
-    //         'password' => 'hashed',
-    //     ];
-    // }
 
     public function driver()
     {
