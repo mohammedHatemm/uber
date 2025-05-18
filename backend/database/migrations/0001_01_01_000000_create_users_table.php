@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('phone')->unique();
-            $table->string('login_code')->nullable();
+            $table->string('login_code');
             $table->rememberToken();
             $table->timestamps();
         });

@@ -51,7 +51,7 @@ class User extends Authenticatable
     {
         return $this->hasOne(Driver::class);
     }
-    public function trip()
+    public function trips()
     {
         return $this->hasMany(Trip::class);
     }
